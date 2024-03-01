@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - main
-      - dev
-      - stage
 jobs:
   build:
     name: Build
