@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+      - dev
+      - stage
 
 jobs:
   deploy:
@@ -22,9 +24,21 @@ jobs:
           CI: false
         run: npm run build
 
+      - name: Set Firebase Token
+        run: echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}" >> $GITHUB_ENV
+        if: github.ref == 'refs/heads/dev'
+
+      - name: Set Firebase Token
+        run: echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}" >> $GITHUB_ENV
+        if: github.ref == 'refs/heads/stage'
+
+      - name: Set Firebase Token
+        run: echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}" >> $GITHUB_ENV
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_TOKEN: ${{ env.FIREBASE_TOKEN }}
