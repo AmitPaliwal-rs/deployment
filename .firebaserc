@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "cicd-96724"
+    "default": "cicd-96724",
+    "dev": "dev-cicd-d24d3"
   }
 }
