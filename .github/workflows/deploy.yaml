@@ -20,9 +20,9 @@ jobs:
         run: |
           npm install -g firebase-tools
 
-      - name: Firebase Login
-        run: firebase login --no-localhost --token "${{ secrets.FIREBASE_TOKEN }}"
-
+      - name: Firebase Login  
+        run: firebase login --interactive --token "${{ secrets.FIREBASE_TOKEN }}"
+  
       - name: Build & Deploy Dev
         if: contains(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/dev'
         run: |
