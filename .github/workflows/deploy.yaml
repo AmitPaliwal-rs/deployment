@@ -1,49 +1,47 @@
-name: Firebase Deployment
+# name: Firebase Deployment
 
-on:
-  push:
-    branches:
-      - main
-      - dev
-      - stage
+# on:
+#   push:
+#     branches:
+#       - main
+#       - dev
+#       - stage
 
-jobs:
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
+# jobs:
+#   deploy:
+#     name: Deploy
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
+#     steps:
+#       - name: Checkout Repo
+#         uses: actions/checkout@v2
 
-      - name: Install Dependencies
-        run: npm install
+#       - name: Install Dependencies
+#         run: npm install
 
-      - name: Build
-        env:
-          CI: false
-        run: npm run build
+#       - name: Build
+#         env:
+#           CI: false
+#         run: npm run build
 
-      - name: Set Firebase Token
-        run: echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}" >> $GITHUB_ENV
-        if: github.ref == 'refs/heads/dev'
+#       - name: Set Firebase Token
+#         run: echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}" >> $GITHUB_ENV
+#         if: github.ref == 'refs/heads/dev'
 
-      - name: Set Firebase Token
-        run: echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}" >> $GITHUB_ENV
-        if: github.ref == 'refs/heads/stage'
+#       - name: Set Firebase Token
+#         run: echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}" >> $GITHUB_ENV
+#         if: github.ref == 'refs/heads/stage'
 
-      - name: Set Firebase Token
-        run: echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}" >> $GITHUB_ENV
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+#       - name: Set Firebase Token
+#         run: echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}" >> $GITHUB_ENV
+#         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
 
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only hosting
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-
-
+#       - name: Deploy to Firebase
+#         uses: w9jds/firebase-action@master
+#         with:
+#           args: deploy --only hosting
+#         env:
+#           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
 # name: Firebase Deployment
 
@@ -51,7 +49,7 @@ jobs:
 #   push:
 #     branches:
 #       - main
-#       - dev 
+#       - dev
 #       - stage
 
 # jobs:
@@ -77,3 +75,62 @@ jobs:
 #           args: deploy --only hosting
 #         env:
 #           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+# "dev": "dev-cicd-d24d3",
+# "main": "cicd-96724",
+# "prod": "dev-cicd-d24d3"
+
+name: Firebase Deployment
+
+"on":
+  push:
+    branches:
+      - main
+      - dev
+      - stage
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      ## checkout current branch
+      - uses: actions/checkout@v2
+      - run: npm ci && npm run build
+
+        ## Install dependencies
+      - name: npm install
+        run: |
+          npm install
+
+        ## Build & Deploy Dev
+      - name: Build & Deploy Dev
+        if: contains(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/dev'
+        run: |
+          npm build
+          npm firebase target:apply hosting dev
+          npm firebase deploy --only hosting -P dev --token ${{ secrets.FIREBASE_TOKEN }} --message "$CI_FIREBASE_MESSAGE"
+
+        ## Build & Deploy stage
+      - name: Build & Deploy stage
+        if: contains(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/stage'
+        run: |
+          npm build
+          npm firebase target:apply hosting dev
+          npm firebase deploy --only hosting -P dev --token ${{ secrets.FIREBASE_TOKEN }} --message "$CI_FIREBASE_MESSAGE"
+
+        ## Build & Deploy Production
+      - name: Build & Deploy Production
+        if: github.ref == 'refs/heads/main'
+        run: |
+          npm build
+          npm firebase target:apply hosting prod
+          yarn firebase deploy --only hosting -P prod --token ${{ secrets.FIREBASE_TOKEN }} --message "$CI_FIREBASE_MESSAGE"
+
+      # - uses: FirebaseExtended/action-hosting-deploy@v0
+        - uses: w9jds/firebase-action@master
+        with:
+          args:
+            deploy --only hosting
+            # repoToken: "${{ secrets.GITHUB_TOKEN }}"
+            # firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CICD_AUTOMATION }}"
+            # channelId: live
+            # projectId: test-ci-cd-automation

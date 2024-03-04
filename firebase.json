@@ -1,17 +1,37 @@
 {
-  "hosting": {
-    "public": "dist",
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ],
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
-  },
-  "projects": {
-    "dev": "dev-cicd-d24d3",
-    "main": "cicd-96724",
-    "prod": "dev-cicd-d24d3"
-  }
+  "hosting": [
+    {
+      "target": "dev",
+      "public": "dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "stage",
+      "public": "dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "main",
+      "public": "dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
 }
