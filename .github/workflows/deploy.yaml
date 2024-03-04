@@ -25,11 +25,11 @@ jobs:
         run: npm run build
 
       - name: Set Firebase Token
-        run: echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}" >> $GITHUB_ENV
+        run: echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN_DEV }}" >> $GITHUB_ENV
         if: github.ref == 'refs/heads/dev'
 
       - name: Set Firebase Token
-        run: echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}" >> $GITHUB_ENV
+        run: echo "FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN_STAGE }}" >> $GITHUB_ENV
         if: github.ref == 'refs/heads/stage'
 
       - name: Set Firebase Token
@@ -41,4 +41,39 @@ jobs:
         with:
           args: deploy --only hosting
         env:
-          FIREBASE_TOKEN: ${{ env.FIREBASE_TOKEN }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+
+
+# name: Firebase Deployment
+
+# on:
+#   push:
+#     branches:
+#       - main
+#       - dev 
+#       - stage
+
+# jobs:
+#   deploy:
+#     name: Deploy
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout Repo
+#         uses: actions/checkout@v2
+
+#       - name: Install Dependencies
+#         run: npm install
+
+#       - name: Build
+#         env:
+#           CI: false
+#         run: npm run build
+
+#       - name: Deploy to Firebase
+#         uses: w9jds/firebase-action@master
+#         with:
+#           args: deploy --only hosting
+#         env:
+#           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
