@@ -28,8 +28,8 @@ jobs:
         if: contains(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/stage'
         run: |
           npm build
-          npm firebase target:apply hosting dev
-          npm firebase deploy --only hosting -P dev --token ${{ secrets.FIREBASE_TOKEN }} --message "$CI_FIREBASE_MESSAGE"
+          npm firebase target:apply hosting stage
+          npm firebase deploy --only hosting -P stage --token ${{ secrets.FIREBASE_TOKEN }} --message "$CI_FIREBASE_MESSAGE"
 
         ## Build & Deploy Production
       - name: Build & Deploy Main
@@ -37,7 +37,7 @@ jobs:
         run: |
           npm build
           npm firebase target:apply hosting main
-          yarn firebase deploy --only hosting -P main --token ${{ secrets.FIREBASE_TOKEN }} --message "$CI_FIREBASE_MESSAGE"
+          npm firebase deploy --only hosting -P main --token ${{ secrets.FIREBASE_TOKEN }} --message "$CI_FIREBASE_MESSAGE"
 
       # - uses: FirebaseExtended/action-hosting-deploy@v0
       - uses: w9jds/firebase-action@master
