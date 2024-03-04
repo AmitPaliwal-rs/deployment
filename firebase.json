@@ -1,22 +1,6 @@
-// {
-//   "hosting": [
-//     {
-//       "target": "main",
-//       "public": "dist",
-//       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-//       "rewrites": [
-//         {
-//           "source": "**",
-//           "destination": "/index.html"
-//         }
-//       ]
-//     }
-//   ]
-// }
-
 {
   "hosting": {
-    "public": "build",
+    "public": "dist",
     "rewrites": [
       {
         "source": "**",
@@ -26,7 +10,7 @@
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
   },
   "projects": {
-    "dev": "dev-your-project-id",
+    "dev": "dev-cicd-d24d3",
     "main": "cicd-96724",
     "prod": "dev-cicd-d24d3"
   }
