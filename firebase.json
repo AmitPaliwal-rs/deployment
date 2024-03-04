@@ -27,7 +27,7 @@
   },
   "projects": {
     "dev": "dev-your-project-id",
-    "stage": "stage-your-project-id",
-    "prod": "prod-your-project-id"
+    "main": "cicd-96724",
+    "prod": "dev-cicd-d24d3"
   }
 }
