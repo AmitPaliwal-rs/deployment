@@ -118,12 +118,12 @@ jobs:
           npm firebase deploy --only hosting -P dev --token ${{ secrets.FIREBASE_TOKEN }} --message "$CI_FIREBASE_MESSAGE"
 
         ## Build & Deploy Production
-      - name: Build & Deploy Production
+      - name: Build & Deploy Main (Production)
         if: github.ref == 'refs/heads/main'
         run: |
           npm build
-          npm firebase target:apply hosting prod
-          yarn firebase deploy --only hosting -P prod --token ${{ secrets.FIREBASE_TOKEN }} --message "$CI_FIREBASE_MESSAGE"
+          npm firebase target:apply hosting main
+          yarn firebase deploy --only hosting -P main --token ${{ secrets.FIREBASE_TOKEN }} --message "$CI_FIREBASE_MESSAGE"
 
       # - uses: FirebaseExtended/action-hosting-deploy@v0
         - uses: w9jds/firebase-action@master
