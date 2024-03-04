@@ -1,12 +1,33 @@
+// {
+//   "hosting": [
+//     {
+//       "target": "main",
+//       "public": "dist",
+//       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+//       "rewrites": [
+//         {
+//           "source": "**",
+//           "destination": "/index.html"
+//         }
+//       ]
+//     }
+//   ]
+// }
+
 {
   "hosting": {
-    "public": "dist",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "public": "build",
     "rewrites": [
       {
         "source": "**",
         "destination": "/index.html"
       }
-    ]
+    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+  },
+  "projects": {
+    "dev": "dev-your-project-id",
+    "stage": "stage-your-project-id",
+    "prod": "prod-your-project-id"
   }
 }
