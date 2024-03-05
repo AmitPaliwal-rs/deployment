@@ -5,15 +5,9 @@
   "targets": {
     "CICD": {
       "hosting": {
-        "stage": [
-          "cicd-96724"
-        ],
-        "dev": [
-          "dev-cicd-d24d3"
-        ],
-        "main": [
-          "cicd-96724"
-        ]
+        "stage": "cicd-96724",
+        "dev": "dev-cicd-d24d3",
+        "main": "cicd-96724"
       }
     }
   }
