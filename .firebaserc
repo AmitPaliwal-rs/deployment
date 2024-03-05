@@ -9,7 +9,10 @@
           "cicd-96724"
         ],
         "dev": [
-          "dev-cicd-d24d3"
+          "dev-cicd-96724"
+        ],
+        "stage": [
+          "stage-cicd-96724"
         ]
       }
     }
