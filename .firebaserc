@@ -3,12 +3,16 @@
     "default": "cicd-96724"
   },
   "targets": {
-    "CICD": {
+    "cicd-96724": {
       "hosting": {
-        "stage": "cicd-96724",
-        "dev": "dev-cicd-d24d3",
-        "main": "cicd-96724"
+        "main": [
+          "cicd-96724"
+        ],
+        "dev": [
+          "dev-cicd-d24d3"
+        ]
       }
     }
-  }
+  },
+  "etags": {}
 }
