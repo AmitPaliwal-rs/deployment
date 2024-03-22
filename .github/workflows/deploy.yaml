@@ -1,52 +1,53 @@
-name: Firebase Deployment
-
-"on":
+name: Deploy to Firebase
+on:
   push:
     branches:
       - main
       - dev
       - stage
+
 jobs:
-  build_and_deploy:
+  firebase-build:
+    name: Firebase Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v2
-      - run: npm ci && npm run build
-
-            ## Install dependencies
-      - name: npm install
-        run: |
-          yarn
-
-      - name: Build & Deploy Dev
-        uses: w9jds/firebase-action@master
-        if: contains(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/dev'
+      - name: Set branch environments
+        run: |-
+          if [[ "${{github.base_ref}}" == "main" || "${{github.ref}}" == "refs/heads/main" ]]; then
+             echo "CMD=deploy-prod" >> "$GITHUB_ENV"
+             echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL_PROD }}" >> "$GITHUB_ENV"
+             echo "VITE_GOOGLE_MAPS_API_KEY=${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}" >> "$GITHUB_ENV"
+             echo "VITE_PUBLIC_APP_ENV=PROD" >> "$GITHUB_ENV"
+             echo "VITE_IMAGE_PROXY_URL=https://img-prod.circonomy.co/" >> "$GITHUB_ENV"
+          fi
+          if [[ "${{github.base_ref}}" == "stage" || "${{github.ref}}" == "refs/heads/stage" ]]; then
+             echo "CMD=deploy-stage" >> "$GITHUB_ENV"
+             echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL_STAGE }}" >> "$GITHUB_ENV"
+             echo "VITE_GOOGLE_MAPS_API_KEY=${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}" >> "$GITHUB_ENV"
+             echo "VITE_PUBLIC_APP_ENV=STAGE" >> "$GITHUB_ENV"
+             echo "VITE_IMAGE_PROXY_URL=https://img-stage.circonomy.co/" >> "$GITHUB_ENV"
+          fi
+          if [[ "${{github.base_ref}}" == "dev" || "${{github.ref}}" == "refs/heads/dev" ]]; then
+             echo "CMD=deploy-dev" >> "$GITHUB_ENV"
+             echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL_DEV }}" >> "$GITHUB_ENV"
+             echo "VITE_GOOGLE_MAPS_API_KEY=${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}" >> "$GITHUB_ENV"
+             echo "VITE_PUBLIC_APP_ENV=DEV" >> "$GITHUB_ENV"
+             echo "VITE_IMAGE_PROXY_URL=https://img-dev.circonomy.co/" >> "$GITHUB_ENV"
+          fi
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Setup Node 14
+        uses: actions/setup-node@v3
         with:
-          args: deploy --only hosting:dev
+          node-version: 19
+          cache: 'npm'
+      - name: Install Dependencies
+        run: npm install
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+      - name: Build and deploy
+        run: npm run ${{ env.CMD }}
         env:
+          CI: ''
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-
-      - name: Build & Deploy stage
-        uses: w9jds/firebase-action@master
-        if: contains(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/stage'
-        with:
-          args: deploy --only hosting:stage
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-
-        ## Build & Deploy Production
-      - name: Build & Deploy Main
-        uses: w9jds/firebase-action@master
-        if: github.ref == 'refs/heads/main'
-        with:
-          args: deploy --only hosting:main
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-
-      # - uses: FirebaseExtended/action-hosting-deploy@v0
-      # # - uses: w9jds/firebase-action@master
-      #   with:
-      #     repoToken: "${{ secrets.GITHUB_TOKEN }}"
-      #     firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_TOKEN }}"
-      #     channelId: live
-      #     projectId: cicd-96724
